@@ -8,27 +8,54 @@
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp"
+        android:text="Akıllı Kampus Giris Ekrani" />
 
     <EditText
         android:id="@+id/editTextText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
-        android:text="Name" />
+        android:inputType="textEmailAddress"
+        android:hint="E-posta adresiniz"
+        android:padding="8dp" />
 
     <EditText
         android:id="@+id/editTextText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="text"
-        android:text="Name" />
+        android:inputType="textPassword"
+        android:hint="Sifre"
+        android:padding="8dp"
+        android:layout_marginTop="8dp"/>
 
     <Button
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:text="Giris Yap"
+        android:layout_marginTop="16dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:textColor="@android:color/holo_blue_dark"
+        android:text="Hesabin yok mu ? Kayit ol" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@android:color/holo_blue_dark"
+        android:layout_marginTop="8dp"
+        android:text="Sifremi Unuttum" />
 </LinearLayout>
