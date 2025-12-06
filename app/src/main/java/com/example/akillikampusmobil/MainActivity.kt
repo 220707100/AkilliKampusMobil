@@ -15,10 +15,26 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+     //XML bileşenlerini bulup kullanmak için yazıyoruz
+        val etEmail = findViewById<EditText>(R.id.etEmail)
+        val etPassword = findViewById<EditText>(R.id.etPassword)
+        val btnLogin = findViewById<Button>(R.id.btnLogin)
+
+        btnLogin.setOnClickListener {
+            val email =etEmail.text.toString()
+            val password = etPassword.text.toString()
+
+            if(email.isBlank() || password.isBlank() ){
+                Toast.makeText(this, "Lutfen alanlari doldurun", Toast.LENGTH_SHORT).show()}
+            else {
+                Toast.makeText(this, "Giris Basarili!", Toast.LENGTH_SHORT).show()}
+
+            }
+
+        }
 
 
     }
-}
 
 
 
