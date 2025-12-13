@@ -21,32 +21,38 @@ class MainActivity : AppCompatActivity() {
         val btnLogin = findViewById<Button>(R.id.btnLogin)
 
         btnLogin.setOnClickListener {
-            val email = etEmail.text.toString()
-            val password = etPassword.text.toString()
 
-            if (email.isBlank() || password.isBlank()) {
-                Toast.makeText(this, "Lutfen alanlari doldurun", Toast.LENGTH_SHORT).show()
-                return@setOnClickListener // Hata varsa kodu burada KES!
-            }
+                val email = etEmail.text.toString()
+                val password = etPassword.text.toString()
 
-            // 3. ROL MANTIĞI
-            // Gerçek hayatta burayı veritabanından soracağız.
-            // Şimdilik sadece "özel admin hesabı" Admin olsun, geri kalan herkes User olsun.
-            val role: String
+                // 1. Kutucuklar Boş mu?
+                if (email.isBlank() || password.isBlank()) {
+                    Toast.makeText(this, "Lütfen e-posta ve şifre girin.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
 
-            if (email == "admin@akillikampus.edu.tr" && password == "123456") {
-                // Özel yönetici girişi
-                role = "Admin"
-            } else {
-                // Diğer herkes (Kayıt olanlar varsayılan User'dır )
-                role = "User"
-            }
+                // 2. Rol Belirleme (Proje PDF Kuralı)
+                val role: String
+                if (email == "admin@akillikampus.edu.tr" && password == "123456") {
+                    role = "Admin"
+                } else {
+                    role = "User"
+                }
 
-            // 4. Sonuç ve Yönlendirme
-            // İleride buraya "if (role == "Admin") AdminActivity'yi aç" diyeceğiz.
+                Toast.makeText(this, "Giriş Başarılı! Yönlendiriliyorsunuz...", Toast.LENGTH_SHORT).show()
 
+                // 3. KÖPRÜ (INTENT) - İşte eksik olan parça bu olabilir!
+                val intent = android.content.Intent(this, HomeActivity::class.java)
 
-            Toast.makeText(this, "Giriş Başarılı! Rolünüz: $role", Toast.LENGTH_LONG).show()
+                // Rol bilgisini diğer sayfaya postala
+                intent.putExtra("USER_ROLE", role)
+
+                // Sayfayı Başlat
+                startActivity(intent)
+
+                // Giriş ekranını kapat
+                finish()
+
         }
         // 1. Yazıları Tanımla
         val tvRegister = findViewById<TextView>(R.id.tvRegister)
