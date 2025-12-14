@@ -6,9 +6,7 @@ plugins {
 
 android {
     namespace = "com.example.akillikampusmobil"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.akillikampusmobil"
@@ -36,24 +34,23 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+
+    // --- DÜZELTİLEN KISIM BURASI ---
+    // Tek bir buildFeatures bloğu olmalı
     buildFeatures {
         compose = true
+        viewBinding = true
     }
-    android {
-        // ... (namespace, compileSdk vs. burada kalacak) ...
 
-        buildFeatures {
-            viewBinding = true
-            compose = true  // <--- EN ÖNEMLİ KISIM
-        }
-
-        composeOptions {
-            kotlinCompilerExtensionVersion = "1.5.1"
-        }
+    // composeOptions da ana android bloğunun içinde olmalı
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.1"
     }
+    // --------------------------------
 }
 
 dependencies {
+    // Standart Kütüphaneler
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -66,6 +63,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+
+    // Testler
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,18 +73,13 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
+    // Arkadaşının Compose kodları için gerekenler:
+    implementation("androidx.activity:activity-compose:1.8.2")
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    // (Diğer compose kütüphaneleri yukarıda zaten var ama bunlar kalabilir, sorun çıkarmaz)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 
-
-
-        // Arkadaşının Compose kodları için gerekenler:
-        implementation("androidx.activity:activity-compose:1.8.2")
-        implementation(platform("androidx.compose:compose-bom:2023.08.00"))
-        implementation("androidx.compose.ui:ui")
-        implementation("androidx.compose.ui:ui-graphics")
-        implementation("androidx.compose.ui:ui-tooling-preview")
-        implementation("androidx.compose.material3:material3")
-        implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
-
-
+    // --- HELİN'İN KODU (HARİTA) İÇİN GEREKEN ---
+    implementation("org.maplibre.gl:android-sdk:12.2.1")
 
 }

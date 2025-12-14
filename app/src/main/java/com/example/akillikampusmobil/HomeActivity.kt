@@ -1,5 +1,6 @@
 package com.example.akillikampusmobil
 
+import android.content.Intent // <--- EKLENDİ (Sayfa geçişi için)
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -15,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext // <--- EKLENDİ (Context için)
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
@@ -131,6 +133,8 @@ class HomeActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnaEkran(vm: RaporlarViewModel) {
+    val context = LocalContext.current // <--- Context alındı
+
     // Verileri Dinle
     val tumRaporlar = vm.raporlar.collectAsState().value
 
@@ -140,66 +144,82 @@ fun AnaEkran(vm: RaporlarViewModel) {
 
     // Filtreleme Mantığı
     val filtrelenmisListe = tumRaporlar.filter { rapor ->
-        // 1. Arama Metni Kontrolü
         val aramaUygun = rapor.baslik.contains(aramaMetni, ignoreCase = true) ||
                 rapor.aciklama.contains(aramaMetni, ignoreCase = true)
-
-        // 2. Kategori Filtresi Kontrolü
         val tipUygun = if (seciliFiltre == null) true else rapor.tip == seciliFiltre
-
         aramaUygun && tipUygun
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        // --- ÜST BAŞLIK VE ARAMA ---
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = "Kampüs Bildirimleri",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Arama Çubuğu
-            OutlinedTextField(
-                value = aramaMetni,
-                onValueChange = { aramaMetni = it },
-                label = { Text("Bildirim Ara...") },
-                leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
-                modifier = Modifier.fillMaxWidth()
+    // --- BURASI DEĞİŞTİ: SCAFFOLD EKLENDİ ---
+    Scaffold(
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    // HARİTAYA GEÇİŞ KODU
+                    val intent = Intent(context, MapActivity::class.java)
+                    context.startActivity(intent)
+                },
+                icon = { Icon(Icons.Default.LocationOn, "Harita") },
+                text = { Text("Harita") },
+                containerColor = MaterialTheme.colorScheme.primary
             )
         }
+    ) { paddingValues -> // Scaffold'un verdiği boşluğu kullanıyoruz
 
-        // --- YATAY FİLTRE BUTONLARI ---
-        LazyRow(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            item {
-                FilterChip(
-                    selected = (seciliFiltre == null),
-                    onClick = { seciliFiltre = null },
-                    label = { Text("Tümü") }
+        Column(modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)) { // <-- Padding buraya eklendi
+
+            // --- ÜST BAŞLIK VE ARAMA ---
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(
+                    text = "Kampüs Bildirimleri",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Arama Çubuğu
+                OutlinedTextField(
+                    value = aramaMetni,
+                    onValueChange = { aramaMetni = it },
+                    label = { Text("Bildirim Ara...") },
+                    leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
-            items(BildirimTipi.values()) { tip ->
-                FilterChip(
-                    selected = (seciliFiltre == tip),
-                    onClick = { seciliFiltre = if (seciliFiltre == tip) null else tip },
-                    label = { Text(tip.name) } // Tip ismini göster
-                )
+
+            // --- YATAY FİLTRE BUTONLARI ---
+            LazyRow(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                item {
+                    FilterChip(
+                        selected = (seciliFiltre == null),
+                        onClick = { seciliFiltre = null },
+                        label = { Text("Tümü") }
+                    )
+                }
+                items(BildirimTipi.values()) { tip ->
+                    FilterChip(
+                        selected = (seciliFiltre == tip),
+                        onClick = { seciliFiltre = if (seciliFiltre == tip) null else tip },
+                        label = { Text(tip.name) } // Tip ismini göster
+                    )
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(8.dp))
 
-        // --- LİSTE ---
-        LazyColumn(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(filtrelenmisListe) { rapor ->
-                RaporSatiri(rapor, vm)
+            // --- LİSTE ---
+            LazyColumn(
+                modifier = Modifier.fillMaxSize().padding(horizontal = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(filtrelenmisListe) { rapor ->
+                    RaporSatiri(rapor, vm)
+                }
             }
         }
     }
